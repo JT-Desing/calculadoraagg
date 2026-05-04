@@ -7,18 +7,24 @@
     <meta name="description" content="Calculadora responsive de tarifas ePayco con comparativo Davivienda y otros bancos." />
     <link rel="stylesheet" href="./styles.css" />
     <style>
-      .receive-block span { color: var(--brand-navy); font-size: 0.9rem; font-weight: 900; }
+      .brand { font-weight: 700; }
+      .top-actions { font-weight: 500; }
+      .top-cta, .reset-button, .best-badge, .ad-slide a { font-family: var(--title-font); font-weight: 600; }
+      .eyebrow, .mini-card span, .step-pill, .field > span, .summary-strip span, .breakdown-row span, .bank-kicker, .ad-slide span, .receive-block span, .logo-separator, .info-tip { font-family: var(--title-font); font-weight: 600; }
+      .mini-card strong, .money-field span, .money-field input, .summary-strip strong, .receive-block strong, .ad-slide strong, .breakdown-row.total span, .breakdown-row.total strong { font-weight: 600; }
+      .tooltip, .summary-strip .tooltip, .summary-strip .tooltip *, .breakdown-row .tooltip, .breakdown-row .tooltip *, .notice, .city-option span { font-weight: 500; }
+      .receive-block span { color: var(--brand-navy); font-size: 0.9rem; }
       .breakdown-row span, .breakdown-row strong { font-weight: 400; }
-      .breakdown-row.total span, .breakdown-row.total strong { font-weight: 700; }
+      .breakdown-row.total span, .breakdown-row.total strong { font-weight: 600; }
       .bank-results .bank-result:first-child .net-meter span { background: linear-gradient(90deg, #047857, #10b981); }
       .bank-results .bank-result:nth-child(2) .net-meter span { background: linear-gradient(90deg, #a8a8a8, #424242); }
       .ad-carousel { position: relative; margin-top: 18px; border-radius: 8px; color: #fff; overflow: hidden; background: radial-gradient(circle at 58% 38%, rgba(0, 130, 196, 0.95) 0%, rgba(0, 130, 196, 0.68) 28%, rgba(29, 29, 29, 0) 58%), radial-gradient(circle at 22% 86%, rgba(0, 130, 196, 0.72) 0%, rgba(0, 130, 196, 0.28) 28%, rgba(29, 29, 29, 0) 52%), linear-gradient(115deg, #1d1d1d 0%, #173240 32%, #0082c4 50%, #173240 68%, #1d1d1d 100%), #1d1d1d; }
       .ad-slides { position: relative; min-height: 126px; }
       .ad-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px 16px 34px; opacity: 0; pointer-events: none; transform: translateX(18px); transition: opacity 220ms ease, transform 220ms ease; }
       .ad-slide.is-active { opacity: 1; pointer-events: auto; transform: translateX(0); }
-      .ad-slide span { display: block; color: var(--muted); font-size: 0.76rem; font-weight: 800; line-height: 1.25; text-transform: uppercase; }
-      .ad-slide strong { display: block; max-width: 520px; margin-top: 5px; font-size: 1rem; line-height: 1.35; }
-      .ad-slide a { display: inline-flex; flex: 0 0 auto; min-height: 42px; align-items: center; justify-content: center; padding: 0 14px; border-radius: 8px; color: var(--brand-navy); background: #fff; font-family: var(--title-font); font-weight: 700; position: relative; z-index: 4; }
+      .ad-slide span { display: block; color: var(--muted); font-size: 0.76rem; line-height: 1.25; text-transform: uppercase; }
+      .ad-slide strong { display: block; max-width: 520px; margin-top: 5px; font-size: 1rem; font-family: var(--title-font); line-height: 1.35; }
+      .ad-slide a { display: inline-flex; flex: 0 0 auto; min-height: 42px; align-items: center; justify-content: center; padding: 0 14px; border-radius: 8px; color: var(--brand-navy); background: #fff; position: relative; z-index: 4; }
       .ad-slide-media { align-items: stretch; padding: 0 0 24px; }
       .ad-slide-media iframe { width: 100%; height: 120px; border: 0; display: block; background: #fff; }
       .ad-controls { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
