@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora de tarifas ePayco</title>
+    <meta
+      name="description"
+      content="Calculadora responsive de tarifas ePayco con comparativo Davivienda y otros bancos."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar" aria-label="Encabezado ePayco">
+        <a class="brand" href="#" aria-label="ePayco">
+          <span class="brand-mark" aria-hidden="true">e</span>
+          <span class="brand-name">ePayco</span>
+        </a>
+
+        <nav class="top-actions" aria-label="Acciones principales">
+          <a href="https://dashboard.epayco.com/" target="_blank" rel="noreferrer">Iniciar sesión</a>
+          <a class="top-cta" href="https://dashboard.epayco.com/" target="_blank" rel="noreferrer">
+            Crear cuenta
+          </a>
+        </nav>
+      </header>
+
+      <section class="promo-banner" aria-label="Promoción ePayco">
+        <div class="banner-copy">
+          <span class="eyebrow">Simulador de tarifas</span>
+          <h1>Calcula cuánto recibes por cada venta</h1>
+          <p>
+            Compara tu abono con tarifa preferencial Davivienda frente a otros bancos y proyecta
+            tus descuentos antes de cobrar.
+          </p>
+        </div>
+
+        <div class="banner-visual" aria-label="Tarifas destacadas">
+          <div class="mini-card">
+            <span>Davivienda</span>
+            <strong>2.68% + $690</strong>
+          </div>
+          <div class="mini-card alt">
+            <span>Otros bancos</span>
+            <strong>3.29% + $700</strong>
+          </div>
+          <div class="payment-rail" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="calculator-layout" aria-label="Calculadora de tarifas">
+        <form class="input-panel" id="calculatorForm">
+          <div class="panel-heading">
+            <span class="step-pill">1</span>
+            <div>
+              <h2>Datos de la venta</h2>
+              <p>Selecciona el escenario de cobro.</p>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>Valor total de la venta</span>
+            <div class="money-field">
+              <span aria-hidden="true">$</span>
+              <input
+                id="saleAmount"
+                type="number"
+                min="0"
+                step="1000"
+                value="120000"
+                inputmode="numeric"
+                aria-describedby="amountHelp"
+              />
+            </div>
+            <small id="amountHelp">Ingresa el valor cobrado al cliente en pesos colombianos.</small>
+          </label>
+
+          <div class="quick-amounts" aria-label="Valores rápidos">
+            <button type="button" data-amount="60000">$60.000</button>
+            <button type="button" data-amount="120000">$120.000</button>
+            <button type="button" data-amount="500000">$500.000</button>
+            <button type="button" data-amount="1000000">$1.000.000</button>
+          </div>
+
+          <label class="field">
+            <span>¿El precio incluye impuesto?</span>
+            <select id="taxRate">
+              <option value="0">Sin IVA (0%)</option>
+              <option value="0.05">IVA 5%</option>
+              <option value="0.08">IAC 8%</option>
+              <option value="0.19" selected>IVA 19%</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Medio de pago</span>
+            <select id="paymentMethod">
+              <option value="pseHigh" selected>PSE (Mayor a $60.000)</option>
+              <option value="pseLow">PSE (Menor a $60.000)</option>
+              <option value="cardNational">Tarjeta crédito y débito nacional</option>
+              <option value="cardInternational">Tarjeta crédito y débito internacional (+0.8%)</option>
+              <option value="cash">Efectivo</option>
+            </select>
+          </label>
+
+          <div class="notice" id="paymentNotice" role="status" aria-live="polite"></div>
+
+          <div class="location-grid">
+            <label class="field">
+              <span>Departamento</span>
+              <select id="departmentSelect"></select>
+            </label>
+
+            <label class="field">
+              <span>Ciudad / Municipio (ReteICA)</span>
+              <div class="autocomplete-field">
+                <input
+                  id="cityInput"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Escribe tu ciudad"
+                  aria-controls="citySuggestions"
+                  aria-expanded="false"
+                />
+                <div class="city-suggestions" id="citySuggestions" role="listbox"></div>
+              </div>
+              <small id="cityHelp">Al elegir una ciudad, el departamento se completa automáticamente.</small>
+            </label>
+          </div>
+
+          <div class="input-footer">
+            <div>
+              <span>Tarifa aplicada</span>
+              <strong id="rateSummary">2.68% + $690 / 3.29% + $700</strong>
+            </div>
+            <button class="reset-button" type="button" id="resetButton">Limpiar</button>
+          </div>
+        </form>
+
+        <aside class="result-panel" aria-live="polite">
+          <div class="panel-heading">
+            <span class="step-pill">2</span>
+            <div>
+              <h2>Resultado estimado</h2>
+              <p id="bestOption">Davivienda mejora tu abono en este escenario.</p>
+            </div>
+          </div>
+
+          <div class="summary-strip">
+            <div class="summary-card">
+              <button class="info-tip" type="button" aria-label="Información sobre base gravable">
+                <span aria-hidden="true">i</span>
+                <span class="tooltip" role="tooltip">
+                  Valor de la venta antes de impuestos. Sobre esta base se calculan retenciones
+                  como ReteRenta y ReteICA.
+                </span>
+              </button>
+              <span>Base gravable</span>
+              <strong id="baseValue">$0</strong>
+            </div>
+            <div class="summary-card">
+              <button class="info-tip" type="button" aria-label="Información sobre impuesto incluido">
+                <span aria-hidden="true">i</span>
+                <span class="tooltip" role="tooltip">
+                  Monto del IVA o impuesto que ya está incluido dentro del valor total cobrado al
+                  cliente.
+                </span>
+              </button>
+              <span>Impuesto incluido</span>
+              <strong id="taxIncluded">$0</strong>
+            </div>
+            <div class="summary-card">
+              <button class="info-tip" type="button" aria-label="Información sobre ReteICA">
+                <span aria-hidden="true">i</span>
+                <span class="tooltip" role="tooltip">
+                  La Retención de ICA (Industria, Comercio y Avisos) es un impuesto municipal. La
+                  tarifa varía según la ciudad donde esté registrado tu negocio. Este NO es un cobro
+                  de ePayco.
+                </span>
+              </button>
+              <span>ReteICA</span>
+              <strong id="reteIcaRate">0%</strong>
+            </div>
+            <div class="summary-card">
+              <button class="info-tip" type="button" aria-label="Información sobre ReteIVA">
+                <span aria-hidden="true">i</span>
+                <span class="tooltip" role="tooltip">
+                  Retención aplicada sobre el impuesto de la venta. En este simulador corresponde
+                  al 19% del IVA incluido.
+                </span>
+              </button>
+              <span>ReteIVA</span>
+              <strong id="reteIvaValue">$0</strong>
+            </div>
+          </div>
+
+          <div class="bank-results" id="bankResults"></div>
+
+          <div class="advisor-band">
+            <div>
+              <span>Convierte más ventas con ePayco</span>
+              <strong>Link de pago, checkout, plugins, SDK y recaudos en una sola plataforma.</strong>
+            </div>
+            <a href="https://dashboard.epayco.co/" target="_blank" rel="noreferrer">Crear cuenta ahora</a>
+          </div>
+
+          <p class="legal-note">
+            Cálculo aproximado con tarifas y retenciones publicadas por ePayco. Los valores finales
+            pueden variar según condiciones del comercio, actividad económica y municipio.
+          </p>
+        </aside>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
