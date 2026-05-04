@@ -10,13 +10,17 @@
       .receive-block span { color: var(--brand-navy); font-size: 0.9rem; font-weight: 900; }
       .breakdown-row span, .breakdown-row strong { font-weight: 400; }
       .breakdown-row.total span, .breakdown-row.total strong { font-weight: 700; }
+      .bank-results .bank-result:first-child .net-meter span { background: linear-gradient(90deg, #047857, #10b981); }
+      .bank-results .bank-result:nth-child(2) .net-meter span { background: linear-gradient(90deg, #a8a8a8, #424242); }
       .ad-carousel { position: relative; margin-top: 18px; border-radius: 8px; color: #fff; overflow: hidden; background: radial-gradient(circle at 58% 38%, rgba(0, 130, 196, 0.95) 0%, rgba(0, 130, 196, 0.68) 28%, rgba(29, 29, 29, 0) 58%), radial-gradient(circle at 22% 86%, rgba(0, 130, 196, 0.72) 0%, rgba(0, 130, 196, 0.28) 28%, rgba(29, 29, 29, 0) 52%), linear-gradient(115deg, #1d1d1d 0%, #173240 32%, #0082c4 50%, #173240 68%, #1d1d1d 100%), #1d1d1d; }
-      .ad-slides { position: relative; min-height: 104px; }
+      .ad-slides { position: relative; min-height: 126px; }
       .ad-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px 16px 34px; opacity: 0; pointer-events: none; transform: translateX(18px); transition: opacity 220ms ease, transform 220ms ease; }
       .ad-slide.is-active { opacity: 1; pointer-events: auto; transform: translateX(0); }
       .ad-slide span { display: block; color: var(--muted); font-size: 0.76rem; font-weight: 800; line-height: 1.25; text-transform: uppercase; }
       .ad-slide strong { display: block; max-width: 520px; margin-top: 5px; font-size: 1rem; line-height: 1.35; }
       .ad-slide a { display: inline-flex; flex: 0 0 auto; min-height: 42px; align-items: center; justify-content: center; padding: 0 14px; border-radius: 8px; color: var(--brand-navy); background: #fff; font-family: var(--title-font); font-weight: 700; position: relative; z-index: 4; }
+      .ad-slide-media { align-items: stretch; padding: 0 0 24px; }
+      .ad-slide-media iframe { width: 100%; height: 120px; border: 0; display: block; background: #fff; }
       .ad-controls { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
       .ad-hit-area, .ad-dot { pointer-events: auto; }
       .ad-hit-area { position: absolute; top: 0; bottom: 0; width: 28%; border: 0; background: transparent; cursor: pointer; }
@@ -25,20 +29,14 @@
       .ad-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 6px; z-index: 2; }
       .ad-dot { width: 8px; height: 8px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.42); cursor: pointer; }
       .ad-dot.is-active { width: 20px; background: #fff; }
-      @media (max-width: 720px) { .ad-slide { align-items: stretch; flex-direction: column; } .ad-slides { min-height: 170px; } .ad-slide a { width: 100%; } }
+      @media (max-width: 720px) { .ad-slide { align-items: stretch; flex-direction: column; } .ad-slides { min-height: 170px; } .ad-slide-media { padding-bottom: 24px; } .ad-slide a { width: 100%; } }
     </style>
   </head>
   <body>
     <main class="page-shell">
       <header class="topbar" aria-label="Encabezado ePayco">
-        <a class="brand" href="#" aria-label="ePayco">
-          <span class="brand-mark" aria-hidden="true">e</span>
-          <span class="brand-name">ePayco</span>
-        </a>
-        <nav class="top-actions" aria-label="Acciones principales">
-          <a href="https://dashboard.epayco.com/" target="_blank" rel="noreferrer">Iniciar sesión</a>
-          <a class="top-cta" href="https://dashboard.epayco.com/" target="_blank" rel="noreferrer">Crear cuenta</a>
-        </nav>
+        <a class="brand" href="#" aria-label="ePayco"><span class="brand-mark" aria-hidden="true">e</span><span class="brand-name">ePayco</span></a>
+        <nav class="top-actions" aria-label="Acciones principales"><a href="https://dashboard.epayco.com/" target="_blank" rel="noreferrer">Iniciar sesión</a><a class="top-cta" href="https://dashboard.epayco.com/" target="_blank" rel="noreferrer">Crear cuenta</a></nav>
       </header>
       <section class="promo-banner" aria-label="Promoción ePayco"><div class="banner-copy"><span class="eyebrow">Simulador de tarifas</span><h1>Calcula cuánto recibes por cada venta</h1><p>Compara tu abono con tarifa preferencial Davivienda frente a otros bancos y proyecta tus descuentos antes de cobrar.</p></div><div class="banner-visual" aria-label="Tarifas destacadas"><div class="mini-card"><span>Davivienda</span><strong>2.68% + $690</strong></div><div class="mini-card alt"><span>Otros bancos</span><strong>3.29% + $700</strong></div><div class="payment-rail" aria-hidden="true"><span></span><span></span><span></span></div></div></section>
       <section class="calculator-layout" aria-label="Calculadora de tarifas">
@@ -56,7 +54,7 @@
           <div class="panel-heading"><span class="step-pill">2</span><div><h2>Resultado estimado</h2><p id="bestOption">Davivienda mejora tu abono en este escenario.</p></div></div>
           <div class="summary-strip"><div class="summary-card"><button class="info-tip" type="button" aria-label="Información sobre base gravable"><span aria-hidden="true">i</span><span class="tooltip" role="tooltip">Valor de la venta antes de impuestos. Sobre esta base se calculan retenciones como ReteRenta y ReteICA.</span></button><span>Base gravable</span><strong id="baseValue">$0</strong></div><div class="summary-card"><button class="info-tip" type="button" aria-label="Información sobre impuesto incluido"><span aria-hidden="true">i</span><span class="tooltip" role="tooltip">Monto del IVA o impuesto que ya está incluido dentro del valor total cobrado al cliente.</span></button><span>Impuesto incluido</span><strong id="taxIncluded">$0</strong></div><div class="summary-card"><button class="info-tip" type="button" aria-label="Información sobre ReteICA"><span aria-hidden="true">i</span><span class="tooltip" role="tooltip">La Retención de ICA (Industria, Comercio y Avisos) es un impuesto municipal. La tarifa varía según la ciudad donde esté registrado tu negocio. Este NO es un cobro de ePayco.</span></button><span>ReteICA</span><strong id="reteIcaRate">0%</strong></div><div class="summary-card"><button class="info-tip" type="button" aria-label="Información sobre ReteIVA"><span aria-hidden="true">i</span><span class="tooltip" role="tooltip">Retención aplicada sobre el impuesto de la venta. En este simulador corresponde al 19% del IVA incluido.</span></button><span>ReteIVA</span><strong id="reteIvaValue">$0</strong></div></div>
           <div class="bank-results" id="bankResults"></div>
-          <div class="ad-carousel" aria-label="Pauta ePayco"><div class="ad-slides" id="adSlides"><article class="ad-slide is-active"><div><span>Convierte más ventas con ePayco</span><strong>Link de pago, checkout, plugins, SDK y recaudos en una sola plataforma.</strong></div><a href="https://dashboard.epayco.co/" target="_blank" rel="noreferrer">Crear cuenta ahora</a></article><article class="ad-slide"><div><span>Recibe pagos de tus clientes</span><strong>Activa PSE, tarjetas, efectivo y transferencias para vender sin fricción.</strong></div><a href="https://epayco.com/" target="_blank" rel="noreferrer">Conocer soluciones</a></article><article class="ad-slide"><div><span>Integra ePayco a tu negocio</span><strong>Usa plugins, API y SDK para llevar tus cobros a tu tienda o aplicación.</strong></div><a href="https://docs.epayco.com/" target="_blank" rel="noreferrer">Ver integraciones</a></article></div><div class="ad-controls" aria-label="Controles de pauta"><button type="button" class="ad-hit-area ad-hit-left" id="adPrev" aria-label="Pauta anterior"></button><div class="ad-dots" id="adDots" aria-label="Seleccionar pauta"></div></div></div>
+          <div class="ad-carousel" aria-label="Pauta ePayco"><div class="ad-slides" id="adSlides"><article class="ad-slide is-active"><div><span>Convierte más ventas con ePayco</span><strong>Link de pago, checkout, plugins, SDK y recaudos en una sola plataforma.</strong></div><a href="https://dashboard.epayco.co/" target="_blank" rel="noreferrer">Crear cuenta ahora</a></article><article class="ad-slide"><div><span>Recibe pagos de tus clientes</span><strong>Activa PSE, tarjetas, efectivo y transferencias para vender sin fricción.</strong></div><a href="https://epayco.com/" target="_blank" rel="noreferrer">Conocer soluciones</a></article><article class="ad-slide"><div><span>Integra ePayco a tu negocio</span><strong>Usa plugins, API y SDK para llevar tus cobros a tu tienda o aplicación.</strong></div><a href="https://docs.epayco.com/" target="_blank" rel="noreferrer">Ver integraciones</a></article><article class="ad-slide ad-slide-media"><iframe src="https://web-epayco.github.io/epayco-assets/carousel/?view=light" width="100%" height="120" style="border:0;overflow:hidden" loading="lazy" referrerpolicy="no-referrer" title="Medios de pago ePayco"></iframe></article></div><div class="ad-controls" aria-label="Controles de pauta"><button type="button" class="ad-hit-area ad-hit-left" id="adPrev" aria-label="Pauta anterior"></button><div class="ad-dots" id="adDots" aria-label="Seleccionar pauta"></div></div></div>
         </aside>
       </section>
     </main>
