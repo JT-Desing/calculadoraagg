@@ -9,6 +9,80 @@
       content="Calculadora responsive de tarifas ePayco con comparativo Davivienda y otros bancos."
     />
     <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .ad-carousel {
+        position: relative;
+        margin-top: 18px;
+        border-radius: 8px;
+        color: #fff;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 58% 38%, rgba(0, 130, 196, 0.95) 0%, rgba(0, 130, 196, 0.68) 28%, rgba(29, 29, 29, 0) 58%),
+          radial-gradient(circle at 22% 86%, rgba(0, 130, 196, 0.72) 0%, rgba(0, 130, 196, 0.28) 28%, rgba(29, 29, 29, 0) 52%),
+          linear-gradient(115deg, #1d1d1d 0%, #173240 32%, #0082c4 50%, #173240 68%, #1d1d1d 100%),
+          #1d1d1d;
+      }
+      .ad-slides { position: relative; min-height: 104px; }
+      .ad-slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 16px 16px 34px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(18px);
+        transition: opacity 220ms ease, transform 220ms ease;
+      }
+      .ad-slide.is-active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+      .ad-slide span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        line-height: 1.25;
+        text-transform: uppercase;
+      }
+      .ad-slide strong { display: block; max-width: 520px; margin-top: 5px; font-size: 1rem; line-height: 1.35; }
+      .ad-slide a {
+        display: inline-flex;
+        flex: 0 0 auto;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border-radius: 8px;
+        color: var(--brand-navy);
+        background: #fff;
+        font-family: var(--title-font);
+        font-weight: 700;
+      }
+      .ad-controls { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+      .ad-hit-area, .ad-dot { pointer-events: auto; }
+      .ad-hit-area { position: absolute; top: 0; bottom: 0; width: 34%; border: 0; background: transparent; cursor: pointer; }
+      .ad-hit-left { left: 0; }
+      .ad-hit-right { right: 0; }
+      .ad-hit-area:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.6); outline-offset: -8px; }
+      .ad-dots {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 2;
+      }
+      .ad-dot { width: 8px; height: 8px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.42); cursor: pointer; }
+      .ad-dot.is-active { width: 20px; background: #fff; }
+      @media (max-width: 720px) {
+        .ad-slide { align-items: stretch; flex-direction: column; }
+        .ad-slides { min-height: 170px; }
+        .ad-slide a { width: 100%; }
+      }
+    </style>
   </head>
   <body>
     <main class="page-shell">
@@ -201,12 +275,38 @@
 
           <div class="bank-results" id="bankResults"></div>
 
-          <div class="advisor-band">
-            <div>
-              <span>Convierte más ventas con ePayco</span>
-              <strong>Link de pago, checkout, plugins, SDK y recaudos en una sola plataforma.</strong>
+          <div class="ad-carousel" aria-label="Pauta ePayco">
+            <div class="ad-slides" id="adSlides">
+              <article class="ad-slide is-active">
+                <div>
+                  <span>Convierte más ventas con ePayco</span>
+                  <strong>Link de pago, checkout, plugins, SDK y recaudos en una sola plataforma.</strong>
+                </div>
+                <a href="https://dashboard.epayco.co/" target="_blank" rel="noreferrer">Crear cuenta ahora</a>
+              </article>
+
+              <article class="ad-slide">
+                <div>
+                  <span>Recibe pagos de tus clientes</span>
+                  <strong>Activa PSE, tarjetas, efectivo y transferencias para vender sin fricción.</strong>
+                </div>
+                <a href="https://epayco.com/" target="_blank" rel="noreferrer">Conocer soluciones</a>
+              </article>
+
+              <article class="ad-slide">
+                <div>
+                  <span>Integra ePayco a tu negocio</span>
+                  <strong>Usa plugins, API y SDK para llevar tus cobros a tu tienda o aplicación.</strong>
+                </div>
+                <a href="https://docs.epayco.com/" target="_blank" rel="noreferrer">Ver integraciones</a>
+              </article>
             </div>
-            <a href="https://dashboard.epayco.co/" target="_blank" rel="noreferrer">Crear cuenta ahora</a>
+
+            <div class="ad-controls" aria-label="Controles de pauta">
+              <button type="button" class="ad-hit-area ad-hit-left" id="adPrev" aria-label="Pauta anterior"></button>
+              <div class="ad-dots" id="adDots" aria-label="Seleccionar pauta"></div>
+              <button type="button" class="ad-hit-area ad-hit-right" id="adNext" aria-label="Siguiente pauta"></button>
+            </div>
           </div>
 
           <p class="legal-note">
@@ -218,5 +318,47 @@
     </main>
 
     <script src="./app.js"></script>
+    <script>
+      (() => {
+        const slides = Array.from(document.querySelectorAll(".ad-slide"));
+        const dots = document.querySelector("#adDots");
+        const prev = document.querySelector("#adPrev");
+        const next = document.querySelector("#adNext");
+        let current = 0;
+        let timer;
+
+        function renderDots() {
+          dots.innerHTML = slides
+            .map((_, index) => `<button class="ad-dot ${index === current ? "is-active" : ""}" type="button" data-ad="${index}" aria-label="Ver pauta ${index + 1}"></button>`)
+            .join("");
+        }
+
+        function show(index) {
+          current = (index + slides.length) % slides.length;
+          slides.forEach((slide, slideIndex) => slide.classList.toggle("is-active", slideIndex === current));
+          renderDots();
+        }
+
+        function start() {
+          window.clearInterval(timer);
+          timer = window.setInterval(() => show(current + 1), 5200);
+        }
+
+        function reset(index) {
+          show(index);
+          start();
+        }
+
+        prev?.addEventListener("click", () => reset(current - 1));
+        next?.addEventListener("click", () => reset(current + 1));
+        dots?.addEventListener("click", (event) => {
+          const dot = event.target.closest(".ad-dot");
+          if (dot) reset(Number(dot.dataset.ad));
+        });
+
+        show(0);
+        start();
+      })();
+    </script>
   </body>
 </html>
